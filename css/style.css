@@ -162,7 +162,8 @@ ul {
 .popular,
 .latest,
 .airing,
-.airingToday {
+.airingToday,
+.similar {
     max-width: 90%;
     margin-top: 6em;
 }
@@ -171,7 +172,8 @@ ul {
 .popular h2,
 .latest h2,
 .airing h2,
-.airingToday h2 {
+.airingToday h2,
+.similar h2 {
     font-size: 2em;
     font-weight: bold;
     margin-bottom: 1em;
@@ -179,14 +181,16 @@ ul {
 
 .top-rated .swiper-slide:hover,
 .popular .swiper-slide:hover,
-.airing .swiper-slide:hover {
+.airing .swiper-slide:hover,
+.similar .swiper-slide:hover {
     transform: scale(1.1);
     transition: all 0.5s ease-in-out;
 }
 
 .top-rated .swiper-slide,
 .popular .swiper-slide,
-.airing .swiper-slide {
+.airing .swiper-slide,
+.similar .swiper-slide {
     height: fit-content;
 }
 
@@ -424,7 +428,8 @@ ul {
 .grid .swiper-slide,
 .top-rated .swiper-slide,
 .popular .swiper-slide,
-.airing .swiper-slide {
+.airing .swiper-slide,
+.similar .swiper-slide {
     border-radius: 1em;
     width: 100%;
     display: flex;

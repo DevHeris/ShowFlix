@@ -144,7 +144,9 @@ async function displaySlider(endpoint, titleKey, urlKey, slideSelector) {
     }
     </a>
     <h4 class="swiper-rating">
-    <i class="fas fa-star text-secondary"></i> ${item.vote_average} / 10
+    <i class="fas fa-star text-secondary"></i> ${item.vote_average.toFixed(
+      1
+    )} / 10
     </h4>
     `;
 
@@ -380,7 +382,7 @@ async function displayMediaDetailsPage(mediaType) {
               }" alt="${isMovie ? media.title : media.name}" />`
             : `<img src="images/no-image.jpg" class="card-img-top" alt="${
                 isMovie ? media.title : media.name
-              }" />`
+              }">`
         }
       </div>
       <div>
@@ -424,7 +426,7 @@ async function displayMediaDetailsPage(mediaType) {
            <li><span class="text-secondary">Number Of Episodes</span> : ${media.number_of_episodes}</li>
            <li><span class="text-secondary">Last Episode To Air</span> : Episode ${media.last_episode_to_air.episode_number} - ${media.last_episode_to_air.name}</li>`
       }
-      <li><span class="text-secondary">Status</span>: ${media.status}</li>
+      <li><span class="text-secondary">Status</span> : ${media.status}</li>
     </ul>
     <h4>Production Companies</h4>
     <div class="list-group">
@@ -436,6 +438,18 @@ async function displayMediaDetailsPage(mediaType) {
   `;
 
   document.getElementById(`${mediaType}-details`).appendChild(div);
+}
+
+async function displaySimilarShows() {
+  const UrlParams = window.location.search;
+  const showId = UrlParams.split("=")[1];
+
+  displaySlider(
+    `tv/${showId}/similar`,
+    "name",
+    "show-details",
+    ".similar .swiper-wrapper"
+  );
 }
 
 // Display Backdrop on Details Pages
@@ -460,6 +474,8 @@ function displayBackgroundImage(type, backgroundPath) {
     document.querySelector("#show-details").appendChild(overLayDiv);
   }
 }
+
+// sfc /scannow
 
 // Formatting Numbers
 function addCommasToNumber(number) {
@@ -541,6 +557,7 @@ function init() {
       break;
     case "/show-details.html":
       displayMediaDetailsPage("show");
+      displaySimilarShows();
       break;
     case "/search.html":
       break;
