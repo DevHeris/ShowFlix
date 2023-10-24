@@ -221,7 +221,7 @@ async function displayVerticalSlider(
     freeMode: true,
     loop: true,
     autoplay: {
-      delay: 6000,
+      delay: 4000,
       disableOnInteraction: false,
     },
     direction: "vertical",
@@ -440,6 +440,18 @@ async function displayMediaDetailsPage(mediaType) {
   document.getElementById(`${mediaType}-details`).appendChild(div);
 }
 
+async function displaySimilarMovies() {
+  const UrlParams = window.location.search;
+  const movieId = UrlParams.split("=")[1];
+
+  displaySlider(
+    `movie/${movieId}/similar`,
+    "title",
+    "movie-details",
+    ".similar .swiper-wrapper"
+  );
+}
+
 async function displaySimilarShows() {
   const UrlParams = window.location.search;
   const showId = UrlParams.split("=")[1];
@@ -449,6 +461,30 @@ async function displaySimilarShows() {
     "name",
     "show-details",
     ".similar .swiper-wrapper"
+  );
+}
+
+async function displayRecommendedMovies() {
+  const UrlParams = window.location.search;
+  const movieId = UrlParams.split("=")[1];
+
+  displaySlider(
+    `movie/${movieId}/recommendations`,
+    "title",
+    "movie-details",
+    ".recommended .swiper-wrapper"
+  );
+}
+
+async function displayRecommendedShows() {
+  const UrlParams = window.location.search;
+  const showId = UrlParams.split("=")[1];
+
+  displaySlider(
+    `tv/${showId}/recommendations`,
+    "name",
+    "show-details",
+    ".recommended .swiper-wrapper"
   );
 }
 
@@ -466,7 +502,7 @@ function displayBackgroundImage(type, backgroundPath) {
   overLayDiv.style.top = "5em";
   overLayDiv.style.left = "0";
   overLayDiv.style.zIndex = "-1";
-  overLayDiv.style.opacity = "0.2";
+  overLayDiv.style.opacity = ".1";
 
   if (type === "movie") {
     document.querySelector("#movie-details").appendChild(overLayDiv);
@@ -474,8 +510,6 @@ function displayBackgroundImage(type, backgroundPath) {
     document.querySelector("#show-details").appendChild(overLayDiv);
   }
 }
-
-// sfc /scannow
 
 // Formatting Numbers
 function addCommasToNumber(number) {
@@ -553,10 +587,12 @@ function init() {
       break;
     case "/movie-details.html":
       displayMediaDetailsPage("movie");
-
+      displayRecommendedMovies();
+      displaySimilarMovies();
       break;
     case "/show-details.html":
       displayMediaDetailsPage("show");
+      displayRecommendedShows();
       displaySimilarShows();
       break;
     case "/search.html":

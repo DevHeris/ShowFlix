@@ -157,13 +157,13 @@ ul {
     color: #ecba12;
 }
 
-/* Upcoming */
 .top-rated,
 .popular,
 .latest,
 .airing,
 .airingToday,
-.similar {
+.similar,
+.recommended {
     max-width: 90%;
     margin-top: 6em;
 }
@@ -173,7 +173,8 @@ ul {
 .latest h2,
 .airing h2,
 .airingToday h2,
-.similar h2 {
+.similar h2,
+.recommended h2 {
     font-size: 2em;
     font-weight: bold;
     margin-bottom: 1em;
@@ -182,7 +183,8 @@ ul {
 .top-rated .swiper-slide:hover,
 .popular .swiper-slide:hover,
 .airing .swiper-slide:hover,
-.similar .swiper-slide:hover {
+.similar .swiper-slide:hover,
+.recommended .swiper-slide:hover {
     transform: scale(1.1);
     transition: all 0.5s ease-in-out;
 }
@@ -190,7 +192,8 @@ ul {
 .top-rated .swiper-slide,
 .popular .swiper-slide,
 .airing .swiper-slide,
-.similar .swiper-slide {
+.similar .swiper-slide,
+.recommended .swiper-slide {
     height: fit-content;
 }
 
@@ -429,7 +432,8 @@ ul {
 .top-rated .swiper-slide,
 .popular .swiper-slide,
 .airing .swiper-slide,
-.similar .swiper-slide {
+.similar .swiper-slide,
+.recommended .swiper-slide {
     border-radius: 1em;
     width: 100%;
     display: flex;
