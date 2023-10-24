@@ -1,3 +1,4 @@
+// Global constants and variables
 const global = {
   currentPage: window.location.pathname, // Get the current page URL path
   api: {
@@ -8,19 +9,25 @@ const global = {
 
 // Function to fetch data from the TMDB API
 async function fetchAPIData(endpoint) {
+  // Retrieve API key and URL from global object
   const API_KEY = global.api.apiKey;
   const API_URL = global.api.apiUrl;
 
-  showSpinner(); // Show loading spinner
+  // Show loading spinner
+  showSpinner();
 
+  // Fetch data from the specified TMDB API endpoint
   const response = await fetch(
     `${API_URL}${endpoint}?api_key=${API_KEY}&language=en-US`
   );
 
+  // Parse the response data as JSON
   const data = await response.json();
 
-  hideSpinner(); // Hide loading spinner
+  // Hide loading spinner
+  hideSpinner();
 
+  // Return the fetched data
   return data;
 }
 
@@ -36,146 +43,116 @@ function hideSpinner() {
 
 // Function to highlight the active navigation link
 function highlightActiveLink() {
+  // Get all navigation links
   const navLinks = document.querySelectorAll(".nav-link");
 
+  // Loop through each link
   navLinks.forEach((link) => {
+    // Check if the link's href matches the current page's URL
     if (link.getAttribute("href") === global.currentPage) {
-      link.classList.add("active"); // Add 'active' class to the current page's link
+      // Add 'active' class to the current page's link
+      link.classList.add("active");
     }
   });
 }
 
-// Function to display the Movies page hero slider
-async function displayMoviesHeroSlider() {
-  const { results } = await fetchAPIData("trending/movie/day");
-
-  results.forEach((movie) => {
-    const backdropPath = `https://image.tmdb.org/t/p/original/${movie.backdrop_path}`;
-
-    const div = document.createElement("div");
-
-    div.classList.add("swiper-slide");
-    div.style.backgroundImage = `linear-gradient(to right, rgba(0, 0, 0, 0.8) 50%, transparent 100%), url(${backdropPath})`;
-
-    div.innerHTML = `
-    <div class="width-control">
-        <h2 class="title">${movie.title}</h2>
-        <div class="rating-releaseDate">
-            <div class="rating">
-                <i class="fa-solid fa-star"></i>
-                <i class="fa-solid fa-star"></i>
-                <i class="fa-solid fa-star"></i>
-                <i class="fa-solid fa-star"></i>
-                <i class="fa-solid fa-star-half"></i> ${movie.vote_average.toFixed(
-                  1
-                )} / 10
-            </div>
-            <p class="releaseDate"><span>Release Date</span> : ${formatReleaseDate(
-              movie.release_date
-            )}</p>
-        </div>
-        <div class="overview">
-           ${movie.overview}
-        </div>
-        <div class="view-details">
-            <a class="btn" href="movie-details.html?id=${
-              movie.id
-            }"><i class="fa-solid fa-play"></i> &nbsp;View Details</a>
-        </div>
-    </div>
-    `;
-    document.querySelector(".hero-section .swiper-wrapper").appendChild(div);
-  });
-
-  const swiper = new Swiper(".swiper-1", {
-    slidesPerView: 1,
-    spaceBetween: 30,
-    freeMode: true,
-    loop: true,
-    autoplay: {
-      delay: 4000,
-      disableOnInteraction: false,
-    },
-  });
-}
-// Function to display the Shows Page hero slider
-async function displayShowsHeroSlider() {
-  const { results } = await fetchAPIData("trending/tv/day");
-
-  results.forEach((show) => {
-    const backdropPath = `https://image.tmdb.org/t/p/original/${show.backdrop_path}`;
-
-    const div = document.createElement("div");
-
-    div.classList.add("swiper-slide");
-    div.style.backgroundImage = `linear-gradient(to right, rgba(0, 0, 0, 0.8) 50%, transparent 100%), url(${backdropPath})`;
-
-    div.innerHTML = `
-    <div class="width-control">
-        <h2 class="title">${show.name}</h2>
-        <div class="rating-releaseDate">
-            <div class="rating">
-                <i class="fa-solid fa-star"></i>
-                <i class="fa-solid fa-star"></i>
-                <i class="fa-solid fa-star"></i>
-                <i class="fa-solid fa-star"></i>
-                <i class="fa-solid fa-star-half"></i> ${show.vote_average.toFixed(
-                  1
-                )} / 10
-            </div>
-            <p class="releaseDate"><span>First Air Date</span> : ${formatReleaseDate(
-              show.first_air_date
-            )}</p>
-        </div>
-        <div class="overview">
-           ${show.overview}
-        </div>
-        <div class="view-details">
-            <a class="btn" href="show-details.html?id=${
-              show.id
-            }"><i class="fa-solid fa-play"></i> &nbsp;View Details</a>
-        </div>
-    </div>
-    `;
-    document.querySelector(".hero-section .swiper-wrapper").appendChild(div);
-  });
-
-  const swiper = new Swiper(".swiper-1", {
-    slidesPerView: 1,
-    spaceBetween: 30,
-    freeMode: true,
-    loop: true,
-    autoplay: {
-      delay: 4000,
-      disableOnInteraction: false,
-    },
-  });
+// Function to format the release date
+function formatReleaseDate(dateString) {
+  let date = new Date(dateString);
+  const options = { year: "numeric", month: "long", day: "numeric" };
+  date = date.toLocaleDateString("default", options);
+  return date;
 }
 
-// Function to display a slider with five slides per view
-async function fiveSlidePerViewSlider(endpoint, appendPoint) {
+// Function to display the hero slider (Movies or Shows)
+async function displayHeroSlider(endpoint, titleKey, dateKey, urlKey) {
+  // Fetch data from the specified TMDB API endpoint
   const { results } = await fetchAPIData(endpoint);
 
-  results.forEach((movie) => {
+  // Loop through each item in the retrieved data
+  results.forEach((item) => {
+    // Create a new slider item
+    const backdropPath = `https://image.tmdb.org/t/p/original/${item.backdrop_path}`;
     const div = document.createElement("div");
     div.classList.add("swiper-slide");
 
+    // Set background image and item details
+    div.style.backgroundImage = `linear-gradient(to right, rgba(0, 0, 0, 0.8) 50%, transparent 100%), url(${backdropPath})`;
     div.innerHTML = `
-    <a href="movie-details.html?id=${movie.id}">
+    <div class="width-control">
+        <h2 class="title">${item[titleKey]}</h2>
+        <div class="rating-releaseDate">
+            <div class="rating">
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star-half"></i> ${item.vote_average.toFixed(
+                  1
+                )} / 10
+            </div>
+            <p class="releaseDate"><span>${
+              dateKey === "release_date" ? "Release Date" : "First Air Date"
+            }</span> : ${formatReleaseDate(item[dateKey])}</p>
+        </div>
+        <div class="overview">
+           ${item.overview}
+        </div>
+        <div class="view-details">
+            <a class="btn" href="${urlKey}.html?id=${
+      item.id
+    }"><i class="fa-solid fa-play"></i> &nbsp;View Details</a>
+        </div>
+    </div>
+    `;
+
+    // Append the item to the slider
+    document.querySelector(".hero-section .swiper-wrapper").appendChild(div);
+  });
+
+  // Initialize a slider using the Swiper library
+  const swiper = new Swiper(".swiper-1", {
+    slidesPerView: 1,
+    spaceBetween: 30,
+    freeMode: true,
+    loop: true,
+    autoplay: {
+      delay: 4000,
+      disableOnInteraction: false,
+    },
+  });
+}
+
+// Function to display a slider with multiple slides per view (Movies or Shows)
+async function displaySlider(endpoint, titleKey, urlKey, slideSelector) {
+  // Fetch data from the specified TMDB API endpoint
+  const { results } = await fetchAPIData(endpoint);
+
+  // Loop through each item in the retrieved data
+  results.forEach((item) => {
+    // Create a new slider item
+    const div = document.createElement("div");
+    div.classList.add("swiper-slide");
+
+    // Set the item's details and poster image
+    div.innerHTML = `
+    <a href="${urlKey}.html?id=${item.id}">
     ${
-      movie.poster_path
-        ? ` <img src="http://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}">`
-        : `<img src="./Images/No image-Cinimatica.png" alt="${movie.title}"></img>`
+      item.poster_path
+        ? ` <img src="http://image.tmdb.org/t/p/w500${item.poster_path}" alt="${item[titleKey]}">`
+        : `<img src="./Images/No image-Cinimatica.png" alt="${item[titleKey]}"></img>`
     }
     </a>
     <h4 class="swiper-rating">
-    <i class="fas fa-star text-secondary"></i> ${movie.vote_average} / 10
+    <i class="fas fa-star text-secondary"></i> ${item.vote_average} / 10
     </h4>
     `;
 
-    document.querySelector(appendPoint).appendChild(div);
+    // Append the item to the slider
+    document.querySelector(slideSelector).appendChild(div);
   });
 
+  // Initialize a slider using the Swiper library
   const swiper = new Swiper(".swiper-2", {
     slidesPerView: 5,
     spaceBetween: 30,
@@ -188,50 +165,54 @@ async function fiveSlidePerViewSlider(endpoint, appendPoint) {
   });
 }
 
-// Function to display the top-rated movies slider
-async function displayTopRatedMoviesSlider() {
-  fiveSlidePerViewSlider("movie/top_rated", ".top-rated .swiper-wrapper");
-}
-// Function to display the top-rated shows slider
-async function displayTopRatedShowsSlider() {
-  fiveSlidePerViewSlider("tv/top_rated", ".top-rated .swiper-wrapper");
-}
+async function displayVerticalSlider(
+  endpoint,
+  idKey,
+  titleKey,
+  dateKey,
+  backdropKey,
+  urlKey,
+  type
+) {
+  // Fetch data from the specified TMDB API endpoint
+  const { results } = await fetchAPIData(endpoint);
 
-// Function to display the popular movies slider
-async function displayPopularMoviesSlider() {
-  fiveSlidePerViewSlider("movie/popular", ".popular .swiper-wrapper");
-}
-
-// Function to display the popular shows slider
-async function displayPopularShowsSlider() {
-  fiveSlidePerViewSlider("tv/popular", ".popular .swiper-wrapper");
-}
-
-// Function to display the Airing Today slider
-async function displayAiringTodaySlider() {
-  fiveSlidePerViewSlider("tv/on_the_air", ".airing .swiper-wrapper");
-}
-
-// Function to display the vertical slider on Movies page
-async function displayMoviesVerticalSlider() {
-  const { results } = await fetchAPIData("movie/now_playing");
-
-  results.forEach((movie) => {
+  // Loop through each item in the retrieved data
+  results.forEach((item) => {
+    // Create a new slider item
     const div = document.createElement("div");
     div.classList.add("swiper-slide");
 
-    div.style.background = `linear-gradient(to top, rgba(0, 0, 0, 0.8) 30%, transparent 100%), url(https://image.tmdb.org/t/p/w500/${movie.poster_path})`;
-    div.setAttribute("data-movie-id", movie.id);
+    // Set the item's background image and details
+    if (item[backdropKey]) {
+      div.style.background = `linear-gradient(to top, rgba(0, 0, 0, 0.8) 30%, transparent 100%), url(https://image.tmdb.org/t/p/w500/${item[backdropKey]})`;
+    } else {
+      div.style.background = `linear-gradient(to top, rgba(0, 0, 0, 0.8) 30%, transparent 100%)`;
+    }
+
+    // Set a data attribute with the item's ID
+    div.setAttribute(`data-${idKey}`, item.id);
+
     div.innerHTML = `
-    <div class="card">
-    <h5 class="card-title">${movie.title.toUpperCase()}</h5>
-    <p class="releaseDate">Release : ${formatReleaseDate(movie.release_date)}
-    </p>
-    </div>   
+      <div class="card">
+        <h5 class="card-title">${item[titleKey].toUpperCase()}</h5>
+        <p class="releaseDate">${
+          dateKey === "release_date" ? "Release" : "First Air Date"
+        } : ${formatReleaseDate(item[dateKey])}</p>
+      </div>
     `;
+
+    // Append the item to the slider
     document.querySelector(".grid .swiper-wrapper").appendChild(div);
+
+    // Add a click event listener to navigate to the details page when clicked
+    div.addEventListener("click", () => {
+      const itemId = item.id;
+      window.location.href = `${urlKey}.html?id=${itemId}`;
+    });
   });
 
+  // Initialize a vertical slider using the Swiper library
   const swiper = new Swiper(".swiper-3", {
     slidesPerView: 2,
     spaceBetween: 30,
@@ -244,113 +225,99 @@ async function displayMoviesVerticalSlider() {
     direction: "vertical",
   });
 
+  // Add an event listener to update content details when a new item is selected
   swiper.on("slideChange", function () {
     const activeIndex = swiper.activeIndex;
     const activeSlide = swiper.slides[activeIndex];
-    const movieId = activeSlide.getAttribute("data-movie-id");
-
-    updateMovieDetails(movieId);
+    const itemId = activeSlide.getAttribute(`data-${idKey}`);
+    updateContentOverview(itemId, type);
   });
 
+  // Get the initial active slide and update content details
   const initialSlide = swiper.slides[swiper.activeIndex];
-  const initialMovieId = initialSlide.getAttribute("data-movie-id");
-  updateMovieDetails(initialMovieId);
+  const initialItemId = initialSlide.getAttribute(`data-${idKey}`);
+  updateContentOverview(initialItemId, type);
 }
 
-// Function to display the vertical slider on Tv shows page
-async function displayShowsVerticalSlider() {
-  const { results } = await fetchAPIData("tv/airing_today");
-
-  results.forEach((show) => {
-    const div = document.createElement("div");
-    div.classList.add("swiper-slide");
-
-    div.style.background = `linear-gradient(to top, rgba(0, 0, 0, 0.8) 30%, transparent 100%), url(https://image.tmdb.org/t/p/w500/${show.poster_path})`;
-    div.setAttribute("data-show-id", show.id);
-    div.innerHTML = `
-    <div class="card">
-    <h5 class="card-title">${show.name.toUpperCase()}</h5>
-    <p class="releaseDate">First Air Date : ${formatReleaseDate(
-      show.first_air_date
-    )}
-    </p>
-    </div>   
-    `;
-    document.querySelector(".grid .swiper-wrapper").appendChild(div);
-  });
-
-  const swiper = new Swiper(".swiper-3", {
-    slidesPerView: 2,
-    spaceBetween: 30,
-    freeMode: true,
-    loop: true,
-    autoplay: {
-      delay: 6000,
-      disableOnInteraction: false,
-    },
-    direction: "vertical",
-  });
-
-  swiper.on("slideChange", function () {
-    const activeIndex = swiper.activeIndex;
-    const activeSlide = swiper.slides[activeIndex];
-    const showId = activeSlide.getAttribute("data-show-id");
-
-    updateShowDetails(showId);
-  });
-
-  const initialSlide = swiper.slides[swiper.activeIndex];
-  const initialshowId = initialSlide.getAttribute("data-show-id");
-  updateShowDetails(initialshowId);
+// Update content details for the selected item
+async function updateContentOverview(itemId, type) {
+  const details = await fetchMediaDetails(itemId, type);
+  displayMediaDetails(details, type);
 }
 
-// Function to update movie details
-async function updateMovieDetails(movieId) {
-  const movieDetails = await fetchMovieDetails(movieId);
-  displayMovieDetails(movieDetails);
-}
-
-// Function to update show details
-async function updateShowDetails(showId) {
-  const showDetails = await fetchShowDetails(showId);
-  displayShowDetails(showDetails);
-}
-
-// Function to fetch movie details from the TMDB API
-async function fetchMovieDetails(movieId) {
+// Fetch detailed information about a movie or TV show from the TMDB API
+async function fetchMediaDetails(mediaId, type) {
   const API_KEY = global.api.apiKey;
   const API_URL = global.api.apiUrl;
+  const mediaType = type === "movie" ? "movie" : "tv";
 
+  // Fetch details for the specified media using its ID and type
   const response = await fetch(
-    `${API_URL}movie/${movieId}?api_key=${API_KEY}&language=en-US`
+    `${API_URL}${mediaType}/${mediaId}?api_key=${API_KEY}&language=en-US`
   );
 
   return response.json();
 }
 
-// Function to fetch show details from the TMDB API
-async function fetchShowDetails(showId) {
-  const API_KEY = global.api.apiKey;
-  const API_URL = global.api.apiUrl;
+// Display detailed information about a movie or TV show in the content overview section
+function displayMediaDetails(mediaDetails, type) {
+  const contentOverview = document.querySelector(".content-overview");
+  const isMovie = type === "movie";
 
-  const response = await fetch(
-    `${API_URL}tv/${showId}?api_key=${API_KEY}&language=en-US`
-  );
+  const title = isMovie ? mediaDetails.title : mediaDetails.name;
+  const releaseDateKey = isMovie ? "release_date" : "first_air_date";
 
-  return response.json();
+  // Set the background image and content details
+  contentOverview.style.background = `linear-gradient(to right, rgba(0, 0, 0, 0.8) 70%, transparent 100%), url(https://image.tmdb.org/t/p/w500/${mediaDetails.backdrop_path})`;
+  contentOverview.style.backgroundRepeat = "no-repeat";
+  contentOverview.style.backgroundSize = "cover";
+  contentOverview.style.backgroundPosition = "center";
+  contentOverview.style.transition = "background 1s ease-in-out";
+
+  // Display media details including title, rating, release date, and overview
+  contentOverview.innerHTML = `
+    <h2 class="title">${title}</h2>
+    <div class="rating-releaseDate">
+        <div class="rating">
+            <i class="fa-solid fa-star"></i>
+            <i class="fa-solid fa-star"></i>
+            <i class "fa-solid fa-star"></i>
+            <i class="fa-solid fa-star"></i>
+            <i class="fa-solid fa-star-half"></i> ${mediaDetails.vote_average.toFixed(
+              1
+            )} / 10
+        </div>
+        <p class="releaseDate"><span>${
+          isMovie ? "Release Date" : "First Air Date"
+        }</span> : ${formatReleaseDate(mediaDetails[releaseDateKey])}</p>
+    </div>
+    <div class="overview">
+        ${mediaDetails.overview}
+    </div>
+    <div class="view-details">
+        <a class="btn" href="${type}-details.html?id=${
+    mediaDetails.id
+  }"><i class="fa-solid fa-play"></i> &nbsp;View Details</a>
+    </div>
+  `;
 }
 
+// Function to display the latest movie
 async function displayLatestMovie() {
+  // Fetch data for movies currently in theaters
   const data = await fetchAPIData("movie/now_playing");
+
+  // Sort movies by release date to get the latest one
   data.results.sort(
     (a, b) => new Date(b.release_date) - new Date(a.release_date)
   );
 
+  // Get the latest movie
   const latestMovie = data.results[0];
-  console.log(latestMovie);
 
   const latestSectionEl = document.querySelector(".latest-movie");
 
+  // Set the background image and content details for the latest movie
   latestSectionEl.style.backgroundImage = `linear-gradient(to right, rgba(0, 0, 0, 0.8) 100%, transparent 100%), url(https://image.tmdb.org/t/p/w500/${latestMovie.poster_path})`;
 
   latestSectionEl.innerHTML = `
@@ -378,7 +345,6 @@ async function displayLatestMovie() {
                   latestMovie.id
                 }"><i class="fa-solid fa-play"></i> &nbsp;View Details</a>
             </div>
-
         </div>
         <div class="latest-img">
         ${
@@ -390,104 +356,74 @@ async function displayLatestMovie() {
   `;
 }
 
-// Function to display movie details
-function displayMovieDetails(movieDetails) {
-  const contentOverview = document.querySelector(".content-overview");
-
-  contentOverview.style.background = `linear-gradient(to right, rgba(0, 0, 0, 0.8) 70%, transparent 100%), url(https://image.tmdb.org/t/p/w500/${movieDetails.backdrop_path})`;
-  contentOverview.style.backgroundRepeat = "no-repeat";
-  contentOverview.style.backgroundSize = "cover";
-  contentOverview.style.backgroundPosition = "center";
-  contentOverview.style.transition = "background 1s ease-in-out";
-
-  contentOverview.innerHTML = `
-  <h2 class="title">${movieDetails.title}</h2>
-  <div class="rating-releaseDate">
-      <div class="rating">
-          <i class="fa-solid fa-star"></i>
-          <i class="fa-solid fa-star"></i>
-          <i class="fa-solid fa-star"></i>
-          <i class="fa-solid fa-star"></i>
-          <i class="fa-solid fa-star-half"></i> ${movieDetails.vote_average.toFixed(
-            1
-          )} / 10
-      </div>
-      <p class="releaseDate"><span>Release Date</span> : ${formatReleaseDate(
-        movieDetails.release_date
-      )}</p>
-  </div>
-  <div class="overview">
-      ${movieDetails.overview}
-  </div>
-  <div class="view-details">
-      <a class="btn" href="movie-details.html?id=${
-        movieDetails.id
-      }"><i class="fa-solid fa-play"></i> &nbsp;View Details</a>
-  </div>
-  `;
-}
-
-// Function to display Show details
-function displayShowDetails(showDetails) {
-  const contentOverview = document.querySelector(".content-overview");
-
-  contentOverview.style.background = `linear-gradient(to right, rgba(0, 0, 0, 0.8) 70%, transparent 100%), url(https://image.tmdb.org/t/p/w500/${showDetails.backdrop_path})`;
-  contentOverview.style.backgroundRepeat = "no-repeat";
-  contentOverview.style.backgroundSize = "cover";
-  contentOverview.style.backgroundPosition = "center";
-  contentOverview.style.transition = "background 1s ease-in-out";
-
-  contentOverview.innerHTML = `
-  <h2 class="title">${showDetails.name}</h2>
-  <div class="rating-releaseDate">
-      <div class="rating">
-          <i class="fa-solid fa-star"></i>
-          <i class="fa-solid fa-star"></i>
-          <i class="fa-solid fa-star"></i>
-          <i class="fa-solid fa-star"></i>
-          <i class="fa-solid fa-star-half"></i> ${showDetails.vote_average.toFixed(
-            1
-          )} / 10
-      </div>
-      <p class="releaseDate"><span>First Air Date</span> : ${formatReleaseDate(
-        showDetails.first_air_date
-      )}</p>
-  </div>
-  <div class="overview">
-      ${showDetails.overview}
-  </div>
-  <div class="view-details">
-      <a class="btn" href="show-details.html?id=${
-        showDetails.id
-      }"><i class="fa-solid fa-play"></i> &nbsp;View Details</a>
-  </div>
-  `;
-}
-
-// Function to format the release date
-function formatReleaseDate(dateString) {
-  let date = new Date(dateString);
-  const options = { year: "numeric", month: "long", day: "numeric" };
-  date = date.toLocaleDateString("default", options);
-  return date;
-}
-
 // Initialize the application
 function init() {
+  // Determine the current page and display content accordingly
   switch (global.currentPage) {
     case "/index.html":
-      displayTopRatedMoviesSlider();
-      displayPopularMoviesSlider();
-      displayMoviesHeroSlider();
-      displayMoviesVerticalSlider();
+      displayHeroSlider(
+        "trending/movie/day",
+        "title",
+        "release_date",
+        "movie-details"
+      );
+      displaySlider(
+        "movie/top_rated",
+        "title",
+        "movie-details",
+        ".top-rated .swiper-wrapper"
+      );
+      displaySlider(
+        "movie/popular",
+        "title",
+        "movie-details",
+        ".popular .swiper-wrapper"
+      );
+      displayVerticalSlider(
+        "movie/now_playing",
+        "movie-id",
+        "title",
+        "release_date",
+        "poster_path",
+        "movie",
+        "movie"
+      );
       displayLatestMovie();
       break;
     case "/shows.html":
-      displayShowsHeroSlider();
-      displayPopularShowsSlider();
-      displayTopRatedShowsSlider();
-      displayAiringTodaySlider();
-      displayShowsVerticalSlider();
+      displayHeroSlider(
+        "trending/tv/day",
+        "name",
+        "first_air_date",
+        "show-details"
+      );
+      displaySlider(
+        "tv/top_rated",
+        "name",
+        "show-details",
+        ".top-rated .swiper-wrapper"
+      );
+      displaySlider(
+        "tv/popular",
+        "name",
+        "show-details",
+        ".popular .swiper-wrapper"
+      );
+      displaySlider(
+        "tv/on_the_air",
+        "name",
+        "show-details",
+        ".airing .swiper-wrapper"
+      );
+      displayVerticalSlider(
+        "tv/airing_today",
+        "show-id",
+        "name",
+        "first_air_date",
+        "poster_path",
+        "show",
+        "show"
+      );
       break;
     case "/movies.html":
       break;
@@ -495,6 +431,9 @@ function init() {
       break;
   }
 
+  // Highlight the active navigation link
   highlightActiveLink();
 }
+
+// Add a listener to run the initialization when the DOM is ready
 document.addEventListener("DOMContentLoaded", init);
