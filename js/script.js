@@ -57,10 +57,11 @@ function highlightActiveLink() {
 }
 
 // Function to format the release date
-function formatReleaseDate(dateString) {
+function formatDate(dateString) {
   let date = new Date(dateString);
   const options = { year: "numeric", month: "long", day: "numeric" };
   date = date.toLocaleDateString("default", options);
+
   return date;
 }
 
@@ -75,7 +76,6 @@ async function displayHeroSlider(endpoint, titleKey, dateKey, urlKey) {
     const backdropPath = `https://image.tmdb.org/t/p/original/${item.backdrop_path}`;
     const div = document.createElement("div");
     div.classList.add("swiper-slide");
-
     // Set background image and item details
     div.style.backgroundImage = `linear-gradient(to right, rgba(0, 0, 0, 0.8) 50%, transparent 100%), url(${backdropPath})`;
     div.innerHTML = `
@@ -93,7 +93,7 @@ async function displayHeroSlider(endpoint, titleKey, dateKey, urlKey) {
             </div>
             <p class="releaseDate"><span>${
               dateKey === "release_date" ? "Release Date" : "First Air Date"
-            }</span> : ${formatReleaseDate(item[dateKey])}</p>
+            }</span> : ${formatDate(item[dateKey])}</p>
         </div>
         <div class="overview">
            ${item.overview}
@@ -198,7 +198,7 @@ async function displayVerticalSlider(
         <h5 class="card-title">${item[titleKey].toUpperCase()}</h5>
         <p class="releaseDate">${
           dateKey === "release_date" ? "Release" : "First Air Date"
-        } : ${formatReleaseDate(item[dateKey])}</p>
+        } : ${formatDate(item[dateKey])}</p>
       </div>
     `;
 
@@ -230,18 +230,21 @@ async function displayVerticalSlider(
     const activeIndex = swiper.activeIndex;
     const activeSlide = swiper.slides[activeIndex];
     const itemId = activeSlide.getAttribute(`data-${idKey}`);
+
     updateContentOverview(itemId, type);
   });
 
   // Get the initial active slide and update content details
   const initialSlide = swiper.slides[swiper.activeIndex];
   const initialItemId = initialSlide.getAttribute(`data-${idKey}`);
+
   updateContentOverview(initialItemId, type);
 }
 
 // Update content details for the selected item
 async function updateContentOverview(itemId, type) {
   const details = await fetchMediaDetails(itemId, type);
+
   displayMediaDetails(details, type);
 }
 
@@ -289,7 +292,7 @@ function displayMediaDetails(mediaDetails, type) {
         </div>
         <p class="releaseDate"><span>${
           isMovie ? "Release Date" : "First Air Date"
-        }</span> : ${formatReleaseDate(mediaDetails[releaseDateKey])}</p>
+        }</span> : ${formatDate(mediaDetails[releaseDateKey])}</p>
     </div>
     <div class="overview">
         ${mediaDetails.overview}
@@ -333,7 +336,7 @@ async function displayLatestMovie() {
                       latestMovie.vote_average
                     } / 10
                 </div>
-                <p class="releaseDate"><span>Release Date</span> ${formatReleaseDate(
+                <p class="releaseDate"><span>Release Date</span> ${formatDate(
                   latestMovie.release_date
                 )}</p>
             </div>
@@ -385,7 +388,7 @@ function init() {
         "title",
         "release_date",
         "poster_path",
-        "movie",
+        "movie-details",
         "movie"
       );
       displayLatestMovie();
@@ -421,11 +424,13 @@ function init() {
         "name",
         "first_air_date",
         "poster_path",
-        "show",
+        "show-details",
         "show"
       );
       break;
-    case "/movies.html":
+    case "/movie-details.html":
+      break;
+    case "/show-details.html":
       break;
     case "/search.html":
       break;
