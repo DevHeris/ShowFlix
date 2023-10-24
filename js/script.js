@@ -359,6 +359,178 @@ async function displayLatestMovie() {
   `;
 }
 
+// Function to display movie details
+async function displayMovieDetailsPage() {
+  const UrlParams = window.location.search;
+  const movieId = UrlParams.split("=")[1];
+
+  const movie = await fetchMediaDetails(movieId, "movie");
+
+  displayBackgroundImage("movie", movie.backdrop_path);
+
+  const div = document.createElement("div");
+  div.innerHTML = `
+  <div class="details-top">
+                <div>
+                    ${
+                      movie.poster_path
+                        ? `<img src="http://image.tmdb.org/t/p/w500${movie.poster_path}" class="card-img-top" alt="${movie.title}" />`
+                        : `<img
+                          src="images/no-image.jpg"
+                          class="card-img-top"
+                          alt="${movie.title}"
+                        />`
+                    }      
+                </div>
+                
+                <div>
+                    <h2>${movie.title}</h2>
+                    <p>
+                        <i class="fas fa-star text-primary"></i>
+                        ${movie.vote_average.toFixed(1)}
+                    </p>
+                    <p><span>Release Date</span> : ${formatDate(
+                      movie.release_date
+                    )}</p>
+                    <p>
+                        ${movie.overview}
+                    </p>
+                    <h5>Genres</h5>
+                    <ul class="list-group">
+                              ${movie.genres
+                                .map((genre) => `<li>${genre.name}</li>`)
+                                .join("")}
+                    </ul>
+                    <a href="${
+                      movie.homepage
+                    }" target="_blank" class="btn">Visit Movie Homepage</a>
+                </div>
+            </div>
+            <div class="details-bottom">
+                <h2>Movie Info</h2>
+                <ul>
+                    <li><span class="text-secondary">Budget:</span> $${addCommasToNumber(
+                      movie.budget
+                    )}</li>
+                    <li><span class="text-secondary">Revenue:</span> $${addCommasToNumber(
+                      movie.revenue
+                    )}</li>
+                    <li><span class="text-secondary">Runtime:</span> ${
+                      movie.runtime
+                    } minutes</li>
+                    <li><span class="text-secondary">Status:</span> ${
+                      movie.status
+                    }</li>
+                </ul>
+                <h4>Production Companies</h4>
+                <div class="list-group">
+                ${movie.production_companies
+                  .map((company) => `<span>${company.name}</span>`)
+                  .join(", ")}
+                </div>
+            </div>
+  `;
+
+  document.getElementById("movie-details").appendChild(div);
+}
+
+// Function to display movie details
+async function displayShowDetailsPage() {
+  const UrlParams = window.location.search;
+  const showId = UrlParams.split("=")[1];
+
+  const show = await fetchMediaDetails(showId, "show");
+  console.log(show);
+  displayBackgroundImage("show", show.backdrop_path);
+
+  const div = document.createElement("div");
+  div.innerHTML = `
+  <div class="details-top">
+                <div> ${
+                  show.poster_path
+                    ? `<img src="http://image.tmdb.org/t/p/w500${show.poster_path}" alt="${show.name}" />`
+                    : `<img src="images/no-image.jpg" class="card-img-top" alt="${show.title}" />`
+                }
+                </div>
+                <div>
+                    <h2>${show.name}</h2>
+                    <p>
+                        <i class="fas fa-star text-primary"></i>
+                        ${show.vote_average.toFixed(1)}
+                    </p>
+                    <p><span>First Air Date </span> : ${formatDate(
+                      show.first_air_date
+                    )}</p>
+                    <p>
+                        ${show.overview}
+                    </p>
+                    <h5>Genres</h5>
+                    <ul class="list-group">
+                       ${show.genres
+                         .map((genre) => `<li>${genre.name}</li>`)
+                         .join("")}
+                    </ul>
+                    <a href="${
+                      show.homepage
+                    }" target="_blank" class="btn">Visit Show Homepage</a>
+                </div>
+            </div>
+            <div class="details-bottom">
+                <h2>Show Info</h2>
+                <ul>
+                    <li><span class="text-secondary">Seasons </span>: ${
+                      show.number_of_seasons
+                    }</li>
+                    <li><span class="text-secondary">Number Of Episodes </span>: ${
+                      show.number_of_episodes
+                    }</li>
+                    <li>
+                        <span class="text-secondary">Last Episode To Air </span>: Episode ${
+                          show.last_episode_to_air.episode_number
+                        } - ${show.last_episode_to_air.name}
+                    </li>
+                    <li><span class="text-secondary">Status </span>: ${
+                      show.status
+                    }</li>
+                </ul>
+                <h4>Production Companies</h4>
+                <div class="list-group">${show.production_companies
+                  .map((company) => `<span>${company.name}</span>`)
+                  .join(", ")}</div>
+            </div>
+  `;
+
+  document.getElementById("show-details").appendChild(div);
+}
+
+// Display Backdrop on Details Pages
+function displayBackgroundImage(type, backgroundPath) {
+  const overLayDiv = document.createElement("div");
+
+  overLayDiv.style.backgroundImage = `url(https://image.tmdb.org/t/p/original/${backgroundPath})`;
+  overLayDiv.style.backgroundSize = "cover";
+  overLayDiv.style.backgroundPosition = "center";
+  overLayDiv.style.backgroundRepeat = "no-repeat";
+  overLayDiv.style.height = "120vh";
+  overLayDiv.style.width = "100vw";
+  overLayDiv.style.position = "absolute";
+  overLayDiv.style.top = "5em";
+  overLayDiv.style.left = "0";
+  overLayDiv.style.zIndex = "-1";
+  overLayDiv.style.opacity = "0.2";
+
+  if (type === "movie") {
+    document.querySelector("#movie-details").appendChild(overLayDiv);
+  } else {
+    document.querySelector("#show-details").appendChild(overLayDiv);
+  }
+}
+
+// Formatting Numbers
+function addCommasToNumber(number) {
+  return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
 // Initialize the application
 function init() {
   // Determine the current page and display content accordingly
@@ -429,8 +601,10 @@ function init() {
       );
       break;
     case "/movie-details.html":
+      displayMovieDetailsPage();
       break;
     case "/show-details.html":
+      displayShowDetailsPage();
       break;
     case "/search.html":
       break;

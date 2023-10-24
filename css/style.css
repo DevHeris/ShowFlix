@@ -491,6 +491,16 @@ ul {
     padding: 1.6em;
 }
 
+.details span {
+    font-weight: bold;
+    color: var(--color-secondary);
+}
+
+.details h4,
+.details h5 {
+    font-weight: bold;
+}
+
 .details-top {
     display: grid;
     grid-template-columns: 1.2fr 2fr;
