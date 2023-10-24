@@ -359,148 +359,83 @@ async function displayLatestMovie() {
   `;
 }
 
-// Function to display movie details
-async function displayMovieDetailsPage() {
+// Function to display media details
+async function displayMediaDetailsPage(mediaType) {
   const UrlParams = window.location.search;
-  const movieId = UrlParams.split("=")[1];
+  const mediaId = UrlParams.split("=")[1];
 
-  const movie = await fetchMediaDetails(movieId, "movie");
+  const media = await fetchMediaDetails(mediaId, mediaType);
+  const isMovie = mediaType === "movie";
 
-  displayBackgroundImage("movie", movie.backdrop_path);
+  displayBackgroundImage(mediaType, media.backdrop_path);
 
   const div = document.createElement("div");
   div.innerHTML = `
-  <div class="details-top">
-                <div>
-                    ${
-                      movie.poster_path
-                        ? `<img src="http://image.tmdb.org/t/p/w500${movie.poster_path}" class="card-img-top" alt="${movie.title}" />`
-                        : `<img
-                          src="images/no-image.jpg"
-                          class="card-img-top"
-                          alt="${movie.title}"
-                        />`
-                    }      
-                </div>
-                
-                <div>
-                    <h2>${movie.title}</h2>
-                    <p>
-                        <i class="fas fa-star text-primary"></i>
-                        ${movie.vote_average.toFixed(1)}
-                    </p>
-                    <p><span>Release Date</span> : ${formatDate(
-                      movie.release_date
-                    )}</p>
-                    <p>
-                        ${movie.overview}
-                    </p>
-                    <h5>Genres</h5>
-                    <ul class="list-group">
-                              ${movie.genres
-                                .map((genre) => `<li>${genre.name}</li>`)
-                                .join("")}
-                    </ul>
-                    <a href="${
-                      movie.homepage
-                    }" target="_blank" class="btn">Visit Movie Homepage</a>
-                </div>
-            </div>
-            <div class="details-bottom">
-                <h2>Movie Info</h2>
-                <ul>
-                    <li><span class="text-secondary">Budget:</span> $${addCommasToNumber(
-                      movie.budget
-                    )}</li>
-                    <li><span class="text-secondary">Revenue:</span> $${addCommasToNumber(
-                      movie.revenue
-                    )}</li>
-                    <li><span class="text-secondary">Runtime:</span> ${
-                      movie.runtime
-                    } minutes</li>
-                    <li><span class="text-secondary">Status:</span> ${
-                      movie.status
-                    }</li>
-                </ul>
-                <h4>Production Companies</h4>
-                <div class="list-group">
-                ${movie.production_companies
-                  .map((company) => `<span>${company.name}</span>`)
-                  .join(", ")}
-                </div>
-            </div>
+    <div class="details-top">
+      <div>
+        ${
+          media.poster_path
+            ? `<img src="http://image.tmdb.org/t/p/w500${
+                media.poster_path
+              }" alt="${isMovie ? media.title : media.name}" />`
+            : `<img src="images/no-image.jpg" class="card-img-top" alt="${
+                isMovie ? media.title : media.name
+              }" />`
+        }
+      </div>
+      <div>
+        <h2>${isMovie ? media.title : media.name}</h2>
+        <p>
+          <i class="fas fa-star text-primary"></i>
+          ${media.vote_average.toFixed(1)}
+        </p>
+        <p><span>${
+          isMovie ? "Release Date" : "First Air Date"
+        }</span> : ${formatDate(
+    isMovie ? media.release_date : media.first_air_date
+  )}</p>
+        <p>
+          ${media.overview}
+        </p>
+        <h5>Genres</h5>
+        <ul class="list-group">
+          ${media.genres.map((genre) => `<li>${genre.name}</li>`).join("")}
+        </ul>
+        <a href="${media.homepage}" target="_blank" class="btn">
+          Visit ${isMovie ? "Movie" : "Show"} Homepage
+        </a>
+      </div>
+    </div>
+    <div class="details-bottom">
+    <h2>${isMovie ? "Movie Info" : "Show Info"}</h2>
+    <ul>
+      ${
+        isMovie
+          ? `<li><span class="text-secondary">Budget</span> : $${addCommasToNumber(
+              media.budget
+            )}</li>
+           <li><span class="text-secondary">Revenue</span> : $${addCommasToNumber(
+             media.revenue
+           )}</li>
+           <li><span class="text-secondary">Runtime</span> : ${
+             media.runtime
+           } minutes</li>`
+          : `<li><span class="text-secondary">Seasons</span> : ${media.number_of_seasons}</li>
+           <li><span class="text-secondary">Number Of Episodes</span> : ${media.number_of_episodes}</li>
+           <li><span class="text-secondary">Last Episode To Air</span> : Episode ${media.last_episode_to_air.episode_number} - ${media.last_episode_to_air.name}</li>`
+      }
+      <li><span class="text-secondary">Status</span>: ${media.status}</li>
+    </ul>
+    <h4>Production Companies</h4>
+    <div class="list-group">
+      ${media.production_companies
+        .map((company) => `<span>${company.name}</span>`)
+        .join(", ")}
+    </div>
+  </div>
   `;
 
-  document.getElementById("movie-details").appendChild(div);
-}
-
-// Function to display movie details
-async function displayShowDetailsPage() {
-  const UrlParams = window.location.search;
-  const showId = UrlParams.split("=")[1];
-
-  const show = await fetchMediaDetails(showId, "show");
-  console.log(show);
-  displayBackgroundImage("show", show.backdrop_path);
-
-  const div = document.createElement("div");
-  div.innerHTML = `
-  <div class="details-top">
-                <div> ${
-                  show.poster_path
-                    ? `<img src="http://image.tmdb.org/t/p/w500${show.poster_path}" alt="${show.name}" />`
-                    : `<img src="images/no-image.jpg" class="card-img-top" alt="${show.title}" />`
-                }
-                </div>
-                <div>
-                    <h2>${show.name}</h2>
-                    <p>
-                        <i class="fas fa-star text-primary"></i>
-                        ${show.vote_average.toFixed(1)}
-                    </p>
-                    <p><span>First Air Date </span> : ${formatDate(
-                      show.first_air_date
-                    )}</p>
-                    <p>
-                        ${show.overview}
-                    </p>
-                    <h5>Genres</h5>
-                    <ul class="list-group">
-                       ${show.genres
-                         .map((genre) => `<li>${genre.name}</li>`)
-                         .join("")}
-                    </ul>
-                    <a href="${
-                      show.homepage
-                    }" target="_blank" class="btn">Visit Show Homepage</a>
-                </div>
-            </div>
-            <div class="details-bottom">
-                <h2>Show Info</h2>
-                <ul>
-                    <li><span class="text-secondary">Seasons </span>: ${
-                      show.number_of_seasons
-                    }</li>
-                    <li><span class="text-secondary">Number Of Episodes </span>: ${
-                      show.number_of_episodes
-                    }</li>
-                    <li>
-                        <span class="text-secondary">Last Episode To Air </span>: Episode ${
-                          show.last_episode_to_air.episode_number
-                        } - ${show.last_episode_to_air.name}
-                    </li>
-                    <li><span class="text-secondary">Status </span>: ${
-                      show.status
-                    }</li>
-                </ul>
-                <h4>Production Companies</h4>
-                <div class="list-group">${show.production_companies
-                  .map((company) => `<span>${company.name}</span>`)
-                  .join(", ")}</div>
-            </div>
-  `;
-
-  document.getElementById("show-details").appendChild(div);
+  document.getElementById(`${mediaType}-details`).appendChild(div);
 }
 
 // Display Backdrop on Details Pages
@@ -601,10 +536,11 @@ function init() {
       );
       break;
     case "/movie-details.html":
-      displayMovieDetailsPage();
+      displayMediaDetailsPage("movie");
+
       break;
     case "/show-details.html":
-      displayShowDetailsPage();
+      displayMediaDetailsPage("show");
       break;
     case "/search.html":
       break;

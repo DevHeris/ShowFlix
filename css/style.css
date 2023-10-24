@@ -496,6 +496,10 @@ ul {
     color: var(--color-secondary);
 }
 
+.details i {
+    color: #ecba12;
+}
+
 .details h4,
 .details h5 {
     font-weight: bold;
