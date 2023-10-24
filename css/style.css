@@ -161,7 +161,8 @@ ul {
 .top-rated,
 .popular,
 .latest,
-.airing {
+.airing,
+.airingToday {
     max-width: 90%;
     margin-top: 6em;
 }
@@ -169,7 +170,8 @@ ul {
 .top-rated h2,
 .popular h2,
 .latest h2,
-.airing h2 {
+.airing h2,
+.airingToday h2 {
     font-size: 2em;
     font-weight: bold;
     margin-bottom: 1em;
@@ -332,6 +334,15 @@ ul {
     margin: 2.5em auto;
 }
 
+.airingToday .grid {
+    max-width: 100%;
+}
+
+.airingToday {
+    max-width: 90%;
+    margin: 6em auto;
+}
+
 
 .swiper-3 {
     grid-column: 1/2;
@@ -379,6 +390,10 @@ ul {
 .content-overview .title {
     font-size: 4em;
     text-transform: uppercase;
+}
+
+.airingToday .content-overview .title {
+    margin-bottom: 0;
 }
 
 .content-overview .rating,

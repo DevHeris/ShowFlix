@@ -209,11 +209,11 @@ async function displayPopularShowsSlider() {
 
 // Function to display the Airing Today slider
 async function displayAiringTodaySlider() {
-  fiveSlidePerViewSlider("airing_today", ".airing .swiper-wrapper");
+  fiveSlidePerViewSlider("tv/on_the_air", ".airing .swiper-wrapper");
 }
 
-// Function to display the vertical slider
-async function displayVerticalSlider() {
+// Function to display the vertical slider on Movies page
+async function displayMoviesVerticalSlider() {
   const { results } = await fetchAPIData("movie/now_playing");
 
   results.forEach((movie) => {
@@ -257,10 +257,63 @@ async function displayVerticalSlider() {
   updateMovieDetails(initialMovieId);
 }
 
+// Function to display the vertical slider on Tv shows page
+async function displayShowsVerticalSlider() {
+  const { results } = await fetchAPIData("tv/airing_today");
+
+  results.forEach((show) => {
+    const div = document.createElement("div");
+    div.classList.add("swiper-slide");
+
+    div.style.background = `linear-gradient(to top, rgba(0, 0, 0, 0.8) 30%, transparent 100%), url(https://image.tmdb.org/t/p/w500/${show.poster_path})`;
+    div.setAttribute("data-show-id", show.id);
+    div.innerHTML = `
+    <div class="card">
+    <h5 class="card-title">${show.name.toUpperCase()}</h5>
+    <p class="releaseDate">First Air Date : ${formatReleaseDate(
+      show.first_air_date
+    )}
+    </p>
+    </div>   
+    `;
+    document.querySelector(".grid .swiper-wrapper").appendChild(div);
+  });
+
+  const swiper = new Swiper(".swiper-3", {
+    slidesPerView: 2,
+    spaceBetween: 30,
+    freeMode: true,
+    loop: true,
+    autoplay: {
+      delay: 6000,
+      disableOnInteraction: false,
+    },
+    direction: "vertical",
+  });
+
+  swiper.on("slideChange", function () {
+    const activeIndex = swiper.activeIndex;
+    const activeSlide = swiper.slides[activeIndex];
+    const showId = activeSlide.getAttribute("data-show-id");
+
+    updateShowDetails(showId);
+  });
+
+  const initialSlide = swiper.slides[swiper.activeIndex];
+  const initialshowId = initialSlide.getAttribute("data-show-id");
+  updateShowDetails(initialshowId);
+}
+
 // Function to update movie details
 async function updateMovieDetails(movieId) {
   const movieDetails = await fetchMovieDetails(movieId);
   displayMovieDetails(movieDetails);
+}
+
+// Function to update show details
+async function updateShowDetails(showId) {
+  const showDetails = await fetchShowDetails(showId);
+  displayShowDetails(showDetails);
 }
 
 // Function to fetch movie details from the TMDB API
@@ -270,6 +323,18 @@ async function fetchMovieDetails(movieId) {
 
   const response = await fetch(
     `${API_URL}movie/${movieId}?api_key=${API_KEY}&language=en-US`
+  );
+
+  return response.json();
+}
+
+// Function to fetch show details from the TMDB API
+async function fetchShowDetails(showId) {
+  const API_KEY = global.api.apiKey;
+  const API_URL = global.api.apiUrl;
+
+  const response = await fetch(
+    `${API_URL}tv/${showId}?api_key=${API_KEY}&language=en-US`
   );
 
   return response.json();
@@ -362,6 +427,43 @@ function displayMovieDetails(movieDetails) {
   `;
 }
 
+// Function to display Show details
+function displayShowDetails(showDetails) {
+  const contentOverview = document.querySelector(".content-overview");
+
+  contentOverview.style.background = `linear-gradient(to right, rgba(0, 0, 0, 0.8) 70%, transparent 100%), url(https://image.tmdb.org/t/p/w500/${showDetails.backdrop_path})`;
+  contentOverview.style.backgroundRepeat = "no-repeat";
+  contentOverview.style.backgroundSize = "cover";
+  contentOverview.style.backgroundPosition = "center";
+  contentOverview.style.transition = "background 1s ease-in-out";
+
+  contentOverview.innerHTML = `
+  <h2 class="title">${showDetails.name}</h2>
+  <div class="rating-releaseDate">
+      <div class="rating">
+          <i class="fa-solid fa-star"></i>
+          <i class="fa-solid fa-star"></i>
+          <i class="fa-solid fa-star"></i>
+          <i class="fa-solid fa-star"></i>
+          <i class="fa-solid fa-star-half"></i> ${showDetails.vote_average.toFixed(
+            1
+          )} / 10
+      </div>
+      <p class="releaseDate"><span>First Air Date</span> : ${formatReleaseDate(
+        showDetails.first_air_date
+      )}</p>
+  </div>
+  <div class="overview">
+      ${showDetails.overview}
+  </div>
+  <div class="view-details">
+      <a class="btn" href="show-details.html?id=${
+        showDetails.id
+      }"><i class="fa-solid fa-play"></i> &nbsp;View Details</a>
+  </div>
+  `;
+}
+
 // Function to format the release date
 function formatReleaseDate(dateString) {
   let date = new Date(dateString);
@@ -377,7 +479,7 @@ function init() {
       displayTopRatedMoviesSlider();
       displayPopularMoviesSlider();
       displayMoviesHeroSlider();
-      displayVerticalSlider();
+      displayMoviesVerticalSlider();
       displayLatestMovie();
       break;
     case "/shows.html":
@@ -385,6 +487,7 @@ function init() {
       displayPopularShowsSlider();
       displayTopRatedShowsSlider();
       displayAiringTodaySlider();
+      displayShowsVerticalSlider();
       break;
     case "/movies.html":
       break;
