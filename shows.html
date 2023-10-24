@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="lib/swiper.css">
+    <link rel="stylesheet" href="lib/fontawesome.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/spinner.css">
+    <script src="lib/swiper.js"></script>
+    <script src="js/script.js" defer></script>
+    <title>ShowFlix</title>
+</head>
+
+<body>
+    <header class="main-header">
+        <div class="container">
+            <div class="logo">
+                <a href="/index.html"><span class="text-secondary">ShowFlix</span></a>
+            </div>
+
+            <nav>
+                <ul>
+                    <li>
+                        <a href="/index.html" class="nav-link">Movies</a>
+                    </li>
+                    <li>
+                        <a href="/shows.html" class="nav-link">TV Shows</a>
+                    </li>
+                    <li>
+                        <a href="#search" class="nav-link">Search</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Slider Section -->
+    <section class="hero-section">
+        <div class="swiper-1">
+            <div class="swiper-wrapper"></div>
+        </div>
+    </section>
+
+    <!-- Search Movies -->
+    <section class="search" id="search">
+        <div class="container">
+            <div id="alert"></div>
+            <form action="/search.html" class="search-form">
+                <!-- movies and shows radio box -->
+                <div class="search-radio">
+                    <input type="radio" id="movie" name="type" value="movie" checked>
+                    <label for="movie">Movies</label>
+                    <input type="radio" id="tv" name="type" value="tv">
+                    <label for="tv">TV Shows</label>
+                </div>
+
+
+                <div class="search-flex">
+                    <input type="text" name="search-term" id="search-term" placeholder="Enter search term">
+                    <button class="btn" type="submit">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Popular Shows Slider Section -->
+    <section class="container popular">
+        <h2>Popular Shows</h2>
+        <div class="swiper-2">
+            <div class="swiper-wrapper"></div>
+    </section>
+
+    <!-- Top Rated Slider Section -->
+    <section class="container top-rated">
+        <h2>Top Rated</h2>
+        <div class="swiper-2">
+            <div class="swiper-wrapper"></div>
+    </section>
+
+    <!-- Top Rated Slider Section -->
+    <section class="container airing">
+        <h2>Airing Today</h2>
+        <div class="swiper-2">
+            <div class="swiper-wrapper"></div>
+    </section>
+
+
+
+    <div class="spinner"></div>
+
+</body>
+
+</html>
