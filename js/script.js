@@ -189,6 +189,9 @@ async function displaySlider(endpoint, titleKey, urlKey, slideSelector) {
       700: {
         slidesPerView: 3,
       },
+      1000: {
+        slidesPerView: 5,
+      },
     },
   });
 }
@@ -253,8 +256,10 @@ async function displayVerticalSlider(
     direction: "vertical",
     breakpoints: {
       200: {
-        direction: "horizontal",
         slidesPerView: 1,
+      },
+      800: {
+        slidesPerView: 2,
       },
     },
   });

@@ -835,31 +835,30 @@ ul {
 
     }
 
+    .airingToday {
+        margin: 2em auto;
+    }
+
     .grid {
         grid-template-columns: 1fr;
-        grid-template-rows: 1fr 2fr;
-        /* grid-gap: 8em; */
+        grid-template-rows: 2fr 1fr;
+        margin: 0;
     }
 
     .swiper-3 {
         grid-column: 1/2;
         grid-row: 1/2;
-        height: 15em;
-
-    }
-
-    .swiper-3 .swiper-slide {
-        background-position: center;
-        background-size: cover;
-    }
-
-    .grid .swiper-3 .releaseDate {
-        display: none;
+        height: 20em;
     }
 
     .content-overview {
-        grid-column: 1/2;
-        grid-row: 2/4;
+        display: none;
+    }
+
+    .main-footer {
+        padding: 1em;
+        margin-top: 0;
+        padding-top: 0;
     }
 
 }
