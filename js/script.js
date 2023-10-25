@@ -83,8 +83,16 @@ async function displayHeroSlider(endpoint, titleKey, dateKey, urlKey) {
     const backdropPath = `https://image.tmdb.org/t/p/original/${item.backdrop_path}`;
     const div = document.createElement("div");
     div.classList.add("swiper-slide");
-    // Set background image and item details
-    div.style.backgroundImage = `linear-gradient(to right, rgba(0, 0, 0, 0.8) 50%, transparent 100%), url(${backdropPath})`;
+
+    // Determine if the gradient should be applied based on screen width
+    const isMobile = window.innerWidth <= 768;
+
+    if (isMobile) {
+      div.style.backgroundImage = `linear-gradient(to right, rgba(0, 0, 0, 0.8) 100%, transparent 100%), url(${backdropPath})`;
+    } else {
+      div.style.backgroundImage = `linear-gradient(to right, rgba(0, 0, 0, 0.8) 50%, transparent 100%), url(${backdropPath})`;
+    }
+
     div.innerHTML = `
     <div class="width-control">
         <h2 class="title">${item[titleKey]}</h2>
@@ -173,7 +181,7 @@ async function displaySlider(endpoint, titleKey, urlKey, slideSelector) {
     },
     breakpoints: {
       200: {
-        slidesPerView: 1,
+        slidesPerView: 2,
       },
       500: {
         slidesPerView: 2,
@@ -243,6 +251,12 @@ async function displayVerticalSlider(
       disableOnInteraction: false,
     },
     direction: "vertical",
+    breakpoints: {
+      200: {
+        direction: "horizontal",
+        slidesPerView: 1,
+      },
+    },
   });
 
   // Add an event listener to update content details when a new item is selected

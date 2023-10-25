@@ -720,26 +720,39 @@ ul {
     }
 
     .hero-section .width-control {
-        padding-left: 0;
-        text-align: center;
+        padding: 1.5em;
+        width: 100%;
     }
 
     .hero-section .title {
         width: 100%;
-        font-size: 3em;
+        font-size: 2em;
+        overflow: auto;
+        max-height: 100px;
+    }
+
+    .container {
+        margin: 0 auto;
+        padding: 0;
+        height: auto;
     }
 
     .hero-section .overview {
         width: 100%;
-    }
-
-    .hero-section .rating,
-    .hero-section .releaseDate {
-        text-align: center;
+        overflow-y: auto;
+        max-height: 200px;
     }
 
     .swiper-1 {
         height: 60vh;
+    }
+
+    .swiper-2 {
+        height: 20em;
+    }
+
+    .latest {
+        margin-top: 2em;
     }
 
     .swiper-slide {
@@ -772,14 +785,6 @@ ul {
         grid-gap: 1.5em;
     }
 
-    .latest-movie .title {
-        font-size: 2.5em;
-    }
-
-    .latest-movie h3 {
-        font-size: 2em;
-    }
-
     .details h2 {
         font-size: 1.4em;
     }
@@ -793,54 +798,68 @@ ul {
         font-size: 16px;
     }
 
-
     .swiper-3 {
         grid-template-columns: 1fr;
-        /* Make the grid one column for smaller screens */
     }
 
     .swiper-3 .grid {
         grid-template-columns: 1fr;
-        /* Make the grid one column for smaller screens */
         margin: 2em auto;
-        /* Adjust the margin as needed */
     }
 
     .swiper-3 .content-overview {
         grid-column: auto;
-        /* Reset grid column */
         text-align: center;
-        /* Center-align text */
     }
 
     .swiper-3 .content-overview .title {
         font-size: 2.5em;
-        /* Adjust the font size */
     }
 
+    .latest img {
+        display: none;
+    }
 
     .latest-movie {
         grid-template-columns: 1fr;
-        /* Make the grid one column for smaller screens */
         padding: 1em;
-        /* Adjust padding as needed */
+        text-align: center;
     }
 
     .latest-movie .title {
-        font-size: 2.5em;
-        /* Adjust the font size */
+        font-size: 1.5em;
     }
 
     .latest-movie .rating i {
-        font-size: 1.5em;
-        /* Adjust the font size for the rating icon */
+        font-size: 1em;
+
     }
 
-    .latest-movie h3 {
-        font-size: 2em;
-        /* Adjust the font size for the subheading */
-        margin: .5em 0;
+    .grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr 2fr;
+        /* grid-gap: 8em; */
+    }
 
+    .swiper-3 {
+        grid-column: 1/2;
+        grid-row: 1/2;
+        height: 15em;
+
+    }
+
+    .swiper-3 .swiper-slide {
+        background-position: center;
+        background-size: cover;
+    }
+
+    .grid .swiper-3 .releaseDate {
+        display: none;
+    }
+
+    .content-overview {
+        grid-column: 1/2;
+        grid-row: 2/4;
     }
 
 }
