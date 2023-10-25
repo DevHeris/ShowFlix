@@ -672,3 +672,175 @@ ul {
     transition: all 0.5s ease-in-out;
     background: #0a4b8f;
 }
+
+/* Media Query for Smaller Screens */
+@media (max-width: 768px) {
+    .main-header {
+        padding: 10px 0;
+    }
+
+    .main-header .container {
+        padding: 0 10px;
+    }
+
+    .main-header .logo {
+        font-size: 20px;
+    }
+
+    .main-header ul li {
+        margin-left: 15px;
+    }
+
+    .main-header ul li a {
+        font-size: 14px;
+    }
+
+    .main-header ul li a:hover {
+        font-weight: bold;
+    }
+
+    .search {
+        padding: 2em;
+    }
+
+    .search .container h2 {
+        font-size: 24px;
+    }
+
+    .search .container form input[type='text'] {
+        height: 40px;
+    }
+
+    .search .container form input[type='text']::placeholder {
+        font-size: 14px;
+    }
+
+    .search .container form button {
+        height: 40px;
+    }
+
+    .hero-section .width-control {
+        padding-left: 0;
+        text-align: center;
+    }
+
+    .hero-section .title {
+        width: 100%;
+        font-size: 3em;
+    }
+
+    .hero-section .overview {
+        width: 100%;
+    }
+
+    .hero-section .rating,
+    .hero-section .releaseDate {
+        text-align: center;
+    }
+
+    .swiper-1 {
+        height: 60vh;
+    }
+
+    .swiper-slide {
+        font-size: 16px;
+    }
+
+    .top-rated h2,
+    .popular h2,
+    .latest h2,
+    .airing h2,
+    .airingToday h2,
+    .similar h2,
+    .recommended h2 {
+        font-size: 1.5em;
+    }
+
+    .top-rated .swiper-slide:hover,
+    .popular .swiper-slide:hover,
+    .airing .swiper-slide:hover,
+    .similar .swiper-slide:hover,
+    .recommended .swiper-slide:hover {
+        transform: scale(1.05);
+    }
+
+    .swiper-slide {
+        font-size: 16px;
+    }
+
+    .grid {
+        grid-gap: 1.5em;
+    }
+
+    .latest-movie .title {
+        font-size: 2.5em;
+    }
+
+    .latest-movie h3 {
+        font-size: 2em;
+    }
+
+    .details h2 {
+        font-size: 1.4em;
+    }
+
+    .details h5 {
+        font-size: 0.8em;
+    }
+
+    .content-overview .overview,
+    .content-overview .title {
+        font-size: 16px;
+    }
+
+
+    .swiper-3 {
+        grid-template-columns: 1fr;
+        /* Make the grid one column for smaller screens */
+    }
+
+    .swiper-3 .grid {
+        grid-template-columns: 1fr;
+        /* Make the grid one column for smaller screens */
+        margin: 2em auto;
+        /* Adjust the margin as needed */
+    }
+
+    .swiper-3 .content-overview {
+        grid-column: auto;
+        /* Reset grid column */
+        text-align: center;
+        /* Center-align text */
+    }
+
+    .swiper-3 .content-overview .title {
+        font-size: 2.5em;
+        /* Adjust the font size */
+    }
+
+
+    .latest-movie {
+        grid-template-columns: 1fr;
+        /* Make the grid one column for smaller screens */
+        padding: 1em;
+        /* Adjust padding as needed */
+    }
+
+    .latest-movie .title {
+        font-size: 2.5em;
+        /* Adjust the font size */
+    }
+
+    .latest-movie .rating i {
+        font-size: 1.5em;
+        /* Adjust the font size for the rating icon */
+    }
+
+    .latest-movie h3 {
+        font-size: 2em;
+        /* Adjust the font size for the subheading */
+        margin: .5em 0;
+
+    }
+
+}

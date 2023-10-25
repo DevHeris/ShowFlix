@@ -171,6 +171,17 @@ async function displaySlider(endpoint, titleKey, urlKey, slideSelector) {
       delay: 4000,
       disableOnInteraction: false,
     },
+    breakpoints: {
+      200: {
+        slidesPerView: 1,
+      },
+      500: {
+        slidesPerView: 2,
+      },
+      700: {
+        slidesPerView: 3,
+      },
+    },
   });
 }
 
@@ -368,20 +379,27 @@ async function displayLatestMovie() {
   `;
 }
 
-// Function to display media details
+// Function to display detailed information about a movie or TV show in the content overview section.
 async function displayMediaDetailsPage(mediaType) {
+  // Get the media ID from the URL parameters
   const UrlParams = window.location.search;
   const mediaId = UrlParams.split("=")[1];
 
+  // Fetch detailed information about the media using its ID and type
   const media = await fetchMediaDetails(mediaId, mediaType);
+
+  // Determine if it's a movie or a TV show
   const isMovie = mediaType === "movie";
 
+  // Display the background image based on media backdrop path
   displayBackgroundImage(mediaType, media.backdrop_path);
 
+  // Create a new HTML div element to display media details
   const div = document.createElement("div");
   div.innerHTML = `
     <div class="details-top">
       <div>
+        <!-- Display the media poster image -->
         ${
           media.poster_path
             ? `<img src="http://image.tmdb.org/t/p/w500${
@@ -408,6 +426,7 @@ async function displayMediaDetailsPage(mediaType) {
         </p>
         <h5>Genres</h5>
         <ul class="list-group">
+          <!-- Display the media genres -->
           ${media.genres.map((genre) => `<li>${genre.name}</li>`).join("")}
         </ul>
         <a href="${media.homepage}" target="_blank" class="btn">
@@ -437,6 +456,7 @@ async function displayMediaDetailsPage(mediaType) {
     </ul>
     <h4>Production Companies</h4>
     <div class="list-group">
+      <!-- Display the production companies -->
       ${media.production_companies
         .map((company) => `<span>${company.name}</span>`)
         .join(", ")}
@@ -444,70 +464,59 @@ async function displayMediaDetailsPage(mediaType) {
   </div>
   `;
 
+  // Append the media details div to the appropriate section
   document.getElementById(`${mediaType}-details`).appendChild(div);
 }
 
-async function displaySimilarMovies() {
+async function displaySimilarContent(
+  mediaType,
+  titleKey,
+  detailsContainer,
+  sliderContainer
+) {
+  // Get the media ID from the URL parameters
   const UrlParams = window.location.search;
-  const movieId = UrlParams.split("=")[1];
+  const mediaId = UrlParams.split("=")[1];
 
-  displaySlider(
-    `movie/${movieId}/similar`,
-    "title",
-    "movie-details",
-    ".similar .swiper-wrapper"
-  );
+  // Construct the API endpoint for similar content
+  const endpoint =
+    mediaType === "movie"
+      ? `movie/${mediaId}/similar`
+      : `tv/${mediaId}/similar`;
+
+  // Display the slider for similar content
+  displaySlider(endpoint, titleKey, detailsContainer, sliderContainer);
 }
 
-async function displaySimilarShows() {
+async function displayRecommendedContent(
+  mediaType,
+  detailsContainer,
+  sliderContainer
+) {
+  // Get the media ID from the URL parameters
   const UrlParams = window.location.search;
-  const showId = UrlParams.split("=")[1];
+  const mediaId = UrlParams.split("=")[1];
 
+  // Construct the API endpoint for recommended content
+  const endpoint =
+    mediaType === "movie"
+      ? `movie/${mediaId}/recommendations`
+      : `tv/${mediaId}/recommendations`;
+
+  // Fetch the recommended content data
+  const { results } = await fetchAPIData(endpoint);
+
+  // Display or hide the recommended section based on the results
+  const recommendedSection = document.querySelector(".recommended");
+  recommendedSection.style.display =
+    results && results.length > 0 ? "block" : "none";
+
+  // Display the slider for recommended content
   displaySlider(
-    `tv/${showId}/similar`,
-    "name",
-    "show-details",
-    ".similar .swiper-wrapper"
-  );
-}
-
-async function displayRecommendedMovies() {
-  const UrlParams = window.location.search;
-  const movieId = UrlParams.split("=")[1];
-
-  const { results } = await fetchAPIData(`movie/${movieId}/recommendations`);
-
-  if (results && results.length > 0) {
-    document.querySelector(".recommended").style.display = "block";
-  } else {
-    document.querySelector(".recommended").style.display = "none";
-  }
-
-  displaySlider(
-    `movie/${movieId}/recommendations`,
-    "title",
-    "movie-details",
-    ".recommended .swiper-wrapper"
-  );
-}
-
-async function displayRecommendedShows() {
-  const UrlParams = window.location.search;
-  const showId = UrlParams.split("=")[1];
-
-  const { results } = await fetchAPIData(`movie/${movieId}/recommendations`);
-
-  if (results && results.length > 0) {
-    document.querySelector(".recommended").style.display = "block";
-  } else {
-    document.querySelector(".recommended").style.display = "none";
-  }
-
-  displaySlider(
-    `tv/${showId}/recommendations`,
-    "name",
-    "show-details",
-    ".recommended .swiper-wrapper"
+    endpoint,
+    mediaType === "movie" ? "title" : "name",
+    detailsContainer,
+    `${sliderContainer} .swiper-wrapper`
   );
 }
 
@@ -556,7 +565,7 @@ async function searchAPIData() {
 async function search() {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
-
+  console.log(queryString);
   global.search.type = urlParams.get("type");
   global.search.term = urlParams.get("search-term");
 
@@ -612,13 +621,12 @@ function displaySearchResults(results) {
         <p class="card-text">
             <small class="text-muted">Release: ${
               global.search.type === "movie"
-                ? result.release_date
-                : result.first_air_date
+                ? formatDate(result.release_date)
+                : formatDate(result.first_air_date)
             }</small>
         </p>
     </div>
     `;
-    // You can use the OR logical operator or a ternary operator, so i used both in this function
 
     document.querySelector("#search-results").appendChild(div);
   });
@@ -643,18 +651,13 @@ function displayPagination() {
   document.getElementById("pagination").appendChild(div);
 
   // Disable prev button if on the first page
-  if (global.search.page === 1) {
-    document.getElementById("prev").style.display = "none";
-  } else {
-    document.getElementById("prev").style.dsiplay = "block";
-  }
+  document.getElementById("prev").style.display =
+    global.search.page === 1 ? "none" : "block";
 
   // Disable next button if on the last page
-  if (global.search.page === global.search.totalPages) {
-    document.getElementById("next").style.display = "none";
-  } else {
-    document.getElementById("next").style.dsiplay = "block";
-  }
+
+  document.getElementById("next").style.display =
+    global.search.page === global.search.totalPages ? "none" : "block";
 
   // Next Page
   document.querySelector("#next").addEventListener("click", async () => {
@@ -761,13 +764,23 @@ function init() {
       break;
     case "/movie-details.html":
       displayMediaDetailsPage("movie");
-      displayRecommendedMovies();
-      displaySimilarMovies();
+      displayRecommendedContent("movie", "movie-details", ".recommended");
+      displaySimilarContent(
+        "movie",
+        "title",
+        "movie-details",
+        ".similar .swiper-wrapper"
+      );
       break;
     case "/show-details.html":
       displayMediaDetailsPage("show");
-      displayRecommendedShows();
-      displaySimilarShows();
+      displayRecommendedContent("show", "show-details", ".recommended");
+      displaySimilarContent(
+        "show",
+        "name",
+        "show-details",
+        ".similar .swiper-wrapper"
+      );
       break;
     case "/search.html":
       search();
