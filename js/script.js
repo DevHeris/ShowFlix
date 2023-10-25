@@ -475,6 +475,14 @@ async function displayRecommendedMovies() {
   const UrlParams = window.location.search;
   const movieId = UrlParams.split("=")[1];
 
+  const { results } = await fetchAPIData(`movie/${movieId}/recommendations`);
+
+  if (results && results.length > 0) {
+    document.querySelector(".recommended").style.display = "block";
+  } else {
+    document.querySelector(".recommended").style.display = "none";
+  }
+
   displaySlider(
     `movie/${movieId}/recommendations`,
     "title",
@@ -486,6 +494,14 @@ async function displayRecommendedMovies() {
 async function displayRecommendedShows() {
   const UrlParams = window.location.search;
   const showId = UrlParams.split("=")[1];
+
+  const { results } = await fetchAPIData(`movie/${movieId}/recommendations`);
+
+  if (results && results.length > 0) {
+    document.querySelector(".recommended").style.display = "block";
+  } else {
+    document.querySelector(".recommended").style.display = "none";
+  }
 
   displaySlider(
     `tv/${showId}/recommendations`,
