@@ -864,11 +864,10 @@ ul {
     }
 
     .details-top {
-
         grid-template-columns: 1fr;
         grid-gap: 0em;
         grid-template-rows: 1fr 1fr;
-        margin-top: 0;
+        margin-top: 1em;
     }
 
     .details-top ul {
