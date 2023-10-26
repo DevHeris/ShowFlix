@@ -886,4 +886,8 @@ ul {
         justify-content: center;
     }
 
+    .overlay {
+        max-height: 85vh;
+    }
+
 }

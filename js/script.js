@@ -541,7 +541,7 @@ async function displayRecommendedContent(
 // Display Backdrop on Details Pages
 function displayBackgroundImage(type, backgroundPath) {
   const overLayDiv = document.createElement("div");
-
+  overLayDiv.classList.add("overlay");
   overLayDiv.style.backgroundImage = `url(https://image.tmdb.org/t/p/original/${backgroundPath})`;
   overLayDiv.style.backgroundSize = "cover";
   overLayDiv.style.backgroundPosition = "center";
@@ -549,7 +549,7 @@ function displayBackgroundImage(type, backgroundPath) {
   overLayDiv.style.height = "120vh";
   overLayDiv.style.width = "100vw";
   overLayDiv.style.position = "absolute";
-  overLayDiv.style.top = "5em";
+  overLayDiv.style.top = "1em";
   overLayDiv.style.left = "0";
   overLayDiv.style.zIndex = "-1";
   overLayDiv.style.opacity = ".1";
@@ -583,7 +583,7 @@ async function searchAPIData() {
 async function search() {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
-  console.log(queryString);
+
   global.search.type = urlParams.get("type");
   global.search.term = urlParams.get("search-term");
 
