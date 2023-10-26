@@ -418,13 +418,12 @@ async function displayMediaDetailsPage(mediaType) {
   div.innerHTML = `
     <div class="details-top">
       <div>
-        <!-- Display the media poster image -->
         ${
           media.poster_path
             ? `<img src="http://image.tmdb.org/t/p/w500${
                 media.poster_path
               }" alt="${isMovie ? media.title : media.name}" />`
-            : `<img src="images/no-image.jpg" class="card-img-top" alt="${
+            : `<img src="images/No image-Cinimatica.jpg" class="card-img-top" alt="${
                 isMovie ? media.title : media.name
               }">`
         }

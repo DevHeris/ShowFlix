@@ -549,8 +549,6 @@ ul {
     border-color: rgba(255, 255, 255, 0.1);
 }
 
-
-
 /* Button */
 .btn {
     display: inline-block;
@@ -859,6 +857,34 @@ ul {
         padding: 1em;
         margin-top: 0;
         padding-top: 0;
+    }
+
+    .details {
+        padding: 1em;
+    }
+
+    .details-top {
+
+        grid-template-columns: 1fr;
+        grid-gap: 0em;
+        grid-template-rows: 1fr 1fr;
+        margin-top: 0;
+    }
+
+    .details-top ul {
+        display: flex;
+        justify-content: space-around;
+    }
+
+    .details-top h5 {
+        color: var(--color-secondary);
+        text-align: center;
+        font-size: 1.4em;
+    }
+
+    .details-top .btn {
+        display: flex;
+        justify-content: center;
     }
 
 }
