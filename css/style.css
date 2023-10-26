@@ -890,4 +890,24 @@ ul {
         max-height: 85vh;
     }
 
+    .details-top img {
+        border-radius: 1em;
+    }
+
+    #search-results {
+        padding: 1em;
+    }
+
+    #search-results-heading h2 {
+        margin: 0 .3em;
+    }
+
+    #search-results-wrapper .card {
+        height: fit-content;
+    }
+
+    #search-results-wrapper .grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+    }
 }
